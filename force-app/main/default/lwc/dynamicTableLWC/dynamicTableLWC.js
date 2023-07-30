@@ -30,7 +30,7 @@ export default class dynamicTableLWC extends LightningElement {
 	}
 
 	
-//
+// Added via GitHub
 	@track showModal;
 	@track tempRow = {};
 	editMode = false;
