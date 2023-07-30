@@ -43,7 +43,7 @@ export default class dynamicTableLWC extends LightningElement {
 			this.openEditForm(event.detail.row);
 		}
 	}
-    // Changed for pull request in vscode
+    // Changed for pull request in vscode 2
 	handleInputChange(event) {
 		this.tempRow[event.target.name] = event.target.value;
 	}
