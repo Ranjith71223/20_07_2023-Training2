@@ -10,6 +10,7 @@ keyIndex = 0;
     }
 ];
 
+//pull request 3 test
 addRow() {
     ++this.keyIndex;
     var newItem = [{ id: this.keyIndex }];
