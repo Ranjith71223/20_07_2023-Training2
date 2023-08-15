@@ -10,8 +10,14 @@ public with sharing class OpportunityController {
     } 
 
     @AuraEnabled(cacheable=true)  
-    public static List<opportunity> CreateQuote(){  
-      return [SELECT Id from quote where id =: QuoteId];  
+    public static Custom_quote__c CreateQuote(){  
+      Custom_quote__c quote = new Custom_quote__c();
+      quote.name__c = null;
+      quote.status__c = 'New';
+      insert quote;
+
+      Custom_quote__c returnQuote = [SELECT Id,name,name__c from Custom_quote__c where id =: quote.id];  
+      return returnQuote;
     } 
 
     @AuraEnabled(cacheable=true)  
