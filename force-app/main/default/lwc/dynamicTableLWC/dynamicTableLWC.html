@@ -1,74 +1,47 @@
 <template>
+    <template if:true={Quote}>
     <lightning-card>
     <h3 slot="title">
         <lightning-icon icon-name="standard:timesheet" alternative-text="Event" size="small"></lightning-icon>
-        &nbsp; Request for Quote
+        &nbsp; Request for Quote #  {Quote.Name}
     </h3>
-    </lightning-card>
     <lightning-layout >
         <lightning-layout-item>
-            Request For Quote #1
-        </lightning-layout-item>
-        <lightning-layout-item>
-            <lightning-input type="text" label="Quote name:">
+            <lightning-input type="text" label="Quote name:" placeholder={Quote.Name__c}>
             </lightning-input>
         </lightning-layout-item>
     </lightning-layout>
+    </lightning-card>
+    </template>
 
     <lightning-card>
-        <template for:each={itemList} for:item="item" for:index="index">
-            <lightning-record-edit-form key={item.id} object-api-name="Contact">
+        <template if:true={hasquotelines}>
+        <template for:each={QuoteLines} for:item="line" for:index="index">
+            <lightning-record-edit-form record-id={line.Id} key={line.Id} object-api-name="Custom_Quote_Line__c">
                 <lightning-messages> </lightning-messages>
                 <lightning-layout multiple-rows>
+                    <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="2"
+                        padding="around-small">
+                        <lightning-input-field placeholder="username@example.com" field-name="Field1__c" variant="label-stacked" > </lightning-input-field>
+                    </lightning-layout-item>
     
                     <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="2"
                         padding="around-small">
-                        <lightning-input-field field-name="FirstName" variant="label-stacked" >
+                        <lightning-input-field field-name="Field2__c" variant="label-stacked" >
                         </lightning-input-field>
                     </lightning-layout-item>
     
                     <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="2"
                         padding="around-small">
-                        <lightning-input-field field-name="LastName" variant="label-stacked" required>
+                        <lightning-input-field field-name="Field3__c" variant="label-stacked" >
                         </lightning-input-field>
                     </lightning-layout-item>
     
-                    <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="2"
-                        padding="around-small">
-                        <lightning-input-field field-name="Title" variant="label-stacked" >
-                        </lightning-input-field>
-                    </lightning-layout-item>
-    
-                    <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="2"
-                        padding="around-small">
-                        <lightning-input-field field-name="Phone" variant="label-stacked" >
-                        </lightning-input-field>
-                    </lightning-layout-item>
-    
-                    <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="2"
-                        padding="around-small">
-                        <lightning-input-field field-name="Email" variant="label-stacked" required>
-                        </lightning-input-field>
-                    </lightning-layout-item>
-                    
-                    <lightning-layout-item size="12" small-device-size="6" medium-device-size="4" large-device-size="2" padding="around-small">
-                        <div class="slds-p-top_medium">
-    
-                            <lightning-icon icon-name="action:new" access-key={item.id} id={index}
-                                alternative-text="Add Row" size="small" title="Add Row" onclick={addRow}>
-                            </lightning-icon>
-                            &nbsp; &nbsp;
-                            <lightning-icon icon-name="action:delete" access-key={item.id} id={index}
-                                alternative-text="Delete Row" size="small" title="Delete Row" onclick={removeRow}>
-                            </lightning-icon>
-    
-                        </div>
-                    </lightning-layout-item>
                 </lightning-layout>
     
             </lightning-record-edit-form>
+            </template>
         </template>
-        
         <lightning-layout>
             
             <div class="slds-align_absolute-center">
@@ -78,7 +51,7 @@
         
         
             <div class="slds-align_absolute-center">
-                <lightning-button variant="success" onclick={handleSubmit} name="submit" label="Delete Request">
+                <lightning-button variant="success" onclick={deleteQuote} name="submit" label="Delete Request">
                 </lightning-button>
             </div>
             

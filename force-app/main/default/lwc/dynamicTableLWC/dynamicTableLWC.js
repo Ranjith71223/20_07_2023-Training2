@@ -1,14 +1,24 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-export default class dynamicTableLWC extends NavigationMixin(LightningElement) {
+import createQuote from '@salesforce/apex/OpportunityController.CreateQuote';
+import getQuote from '@salesforce/apex/OpportunityController.getQuote';
+import getQuoteLines from '@salesforce/apex/OpportunityController.getQuoteLines';
+import saveQuote from '@salesforce/apex/OpportunityController.saveQuote';
+import deleteQuote from '@salesforce/apex/OpportunityController.deleteQuote';
 
+export default class dynamicTableLWC extends NavigationMixin(LightningElement) {
+hasquotelines;
+QuoteId;
+recordId;
+Quote;
+QuoteLines = [];
 keyIndex = 0;
-@track itemList = [
+/*@track QuoteLines = [
     {
         id: 0
     }
-];
+];*/
 
 //pull request 3 test
 addRow() {
@@ -27,15 +37,79 @@ removeRow(event) {
     }
 }
 
+constructor(){
+    super();
+    if(true){
+        this.recordId = 'a015j00000WSkSHAA1';
+        getQuote({QuoteId : this.recordId})
+                .then(result1 => {
+                    this.Quote = result1;
+                    
+                    getQuoteLines({QuoteId : this.recordId})
+                .then(result1 => {
+                    
+                    this.QuoteLines = result1;
+                    if(this.QuoteLines){
+                        this.hasquotelines = true;
+                    }else{
+                        this.hasquotelines = false;
+                    }
+                    console.log('----result3----' ,JSON.stringify(this.QuoteLines));
+                })
+                .catch(error => {
+                    
+                    this.error = error;
+                })
+                })
+                .catch(error => {
+                    
+                    this.error = error;
+                })
+
+    }else{
+    createQuote()
+            .then(result => {
+                console.log('----result----' ,result);
+                this.QuoteId = result;
+                
+                getQuote({QuoteId : this.QuoteId})
+                .then(result1 => {
+                    console.log('----result1----' ,JSON.stringify(result1));
+                    this.Quote = result1;
+                    console.log('----result1----' ,JSON.stringify(this.Quote));
+
+                    getQuoteLines({QuoteId : this.QuoteId})
+                .then(result1 => {
+                    console.log('----result1----' ,JSON.stringify(result1));
+                    this.QuoteLines = result1;
+                    console.log('----result3----' ,JSON.stringify(this.QuoteLines));
+                })
+                .catch(error => {
+                    console.log('----error----' ,JSON.stringify(error));
+                    this.error = error;
+                })
+                })
+                .catch(error => {
+                    console.log('----error----' ,JSON.stringify(error));
+                    this.error = error;
+                })
+
+                                
+            })
+            .catch(error => {
+                console.log('----error----' ,error);
+                this.error = error;
+            })
+
+        }        
+
+}
+
 handleSubmit() {
-    var isVal = true;
-    this.template.querySelectorAll('lightning-input-field').forEach(element => {
-        isVal = isVal && element.reportValidity();
-    });
-    if (isVal) {
-        this.template.querySelectorAll('lightning-record-edit-form').forEach(element => {
-            element.submit();
-        });
+   
+    saveQuote({Quote : this.Quote})
+    .then(result1 => {
+        console.log('-----result----- ' + JSON.stringify(result1));
         this.dispatchEvent(
             new ShowToastEvent({
                 title: 'Success',
@@ -43,23 +117,31 @@ handleSubmit() {
                 variant: 'success',
             }),
         );
-        // Navigate to the Account home page
-        this[NavigationMixin.Navigate]({
-            type: 'standard__objectPage',
-            attributes: {
-                objectApiName: 'Contact',
-                actionName: 'home',
-            },
-        });
-    } else {
+    })
+    .catch(error => {
+        this.error = error;
+        console.log('-----error----- ' + JSON.stringify(error));
+    })
+    
+    
+}
+
+deleteQuote(){
+    deleteQuote({Quote : this.Quote})
+    .then(result1 => {
+        console.log('-----result----- ' + JSON.stringify(result1));
         this.dispatchEvent(
             new ShowToastEvent({
-                title: 'Error creating record',
-                message: 'Please enter all the required fields',
-                variant: 'error',
+                title: 'Success',
+                message: 'Quote Deleted',
+                variant: 'success',
             }),
         );
-    }
+    })
+    .catch(error => {
+        this.error = error;
+        console.log('-----error----- ' + JSON.stringify(error));
+    })
 }
 
 }
