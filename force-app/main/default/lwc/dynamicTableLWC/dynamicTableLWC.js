@@ -6,6 +6,7 @@ import getQuote from '@salesforce/apex/OpportunityController.getQuote';
 import getQuoteLines from '@salesforce/apex/OpportunityController.getQuoteLines';
 import saveQuote from '@salesforce/apex/OpportunityController.saveQuote';
 import deleteQuote from '@salesforce/apex/OpportunityController.deleteQuote';
+import createQuoteLines from '@salesforce/apex/OpportunityController.createQuoteLines';
 
 export default class dynamicTableLWC extends NavigationMixin(LightningElement) {
 hasquotelines;
@@ -14,11 +15,11 @@ recordId;
 Quote;
 QuoteLines = [];
 keyIndex = 0;
-/*@track QuoteLines = [
+@track itemList = [
     {
         id: 0
     }
-];*/
+];
 
 //pull request 3 test
 addRow() {
@@ -40,20 +41,21 @@ removeRow(event) {
 constructor(){
     super();
     if(true){
-        this.recordId = 'a015j00000WSkSHAA1';
+        this.recordId = 'a015j00000WTXTnAAP';
         getQuote({QuoteId : this.recordId})
                 .then(result1 => {
                     this.Quote = result1;
                     
                     getQuoteLines({QuoteId : this.recordId})
                 .then(result1 => {
-                    
+                    alert(JSON.stringify(result1));
                     this.QuoteLines = result1;
                     if(this.QuoteLines){
                         this.hasquotelines = true;
                     }else{
                         this.hasquotelines = false;
                     }
+                    alert(this.hasquotelines);
                     console.log('----result3----' ,JSON.stringify(this.QuoteLines));
                 })
                 .catch(error => {
@@ -67,41 +69,25 @@ constructor(){
                 })
 
     }else{
-    createQuote()
+    console.log('----else-------');
+    createQuote()                            
             .then(result => {
-                console.log('----result----' ,result);
                 this.QuoteId = result;
                 
                 getQuote({QuoteId : this.QuoteId})
                 .then(result1 => {
-                    console.log('----result1----' ,JSON.stringify(result1));
                     this.Quote = result1;
-                    console.log('----result1----' ,JSON.stringify(this.Quote));
-
-                    getQuoteLines({QuoteId : this.QuoteId})
-                .then(result1 => {
-                    console.log('----result1----' ,JSON.stringify(result1));
-                    this.QuoteLines = result1;
-                    console.log('----result3----' ,JSON.stringify(this.QuoteLines));
+                    this.hasquotelines = false;
                 })
                 .catch(error => {
-                    console.log('----error----' ,JSON.stringify(error));
                     this.error = error;
-                })
-                })
-                .catch(error => {
-                    console.log('----error----' ,JSON.stringify(error));
-                    this.error = error;
-                })
-
-                                
+                })                
             })
             .catch(error => {
-                console.log('----error----' ,error);
                 this.error = error;
             })
 
-        }        
+        } 
 
 }
 
@@ -127,7 +113,8 @@ handleSubmit() {
 }
 
 deleteQuote(){
-    deleteQuote({Quote : this.Quote})
+    console.log('----coming inside delete------ '+ JSON.stringify(this.Quote));
+    deleteQuote({QuoteId : this.Quote.Id})
     .then(result1 => {
         console.log('-----result----- ' + JSON.stringify(result1));
         this.dispatchEvent(
@@ -143,5 +130,32 @@ deleteQuote(){
         console.log('-----error----- ' + JSON.stringify(error));
     })
 }
+
+handleNewSubmit(event) {
+    alert(this.QuoteId);
+    this.template.querySelectorAll('lightning-record-edit-form').forEach(element => {
+        alert('coming inside');
+        element.submit();
+    });
+
+        //console.log('----itemlist------ '+ JSON.stringify(itemList));
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Success',
+                message: 'Contacts successfully created',
+                variant: 'success',
+            }),
+        );
+        // Navigate to the Account home page
+        this[NavigationMixin.Navigate]({
+            type: 'standard__objectPage',
+            attributes: {
+                objectApiName: 'Contact',
+                actionName: 'home',
+            },
+        });
+    
+}
+
 
 }

@@ -40,10 +40,18 @@ public with sharing class OpportunityController {
        return 'Success';
     }
 
+    @AuraEnabled(cacheable=true)  
+    public static String createQuoteLines(String QuoteId, List<String> lineList){  
+
+       system.debug('-----QuoteId----- ' + QuoteId);
+       system.debug('-----lineList----- ' + lineList);
+       return 'Success';
+    }
+
     
     @AuraEnabled(cacheable=false)  
     public static String deleteQuote(String QuoteId){  
-      
+      system.debug('----- ' + QuoteId);
       delete [select Id,field1__c,field2__c,field3__c,Custom_Quote__c from Custom_Quote_Line__c where Custom_Quote__c =: QuoteId];
       
       delete [SELECT Id from Custom_Quote__c where id =: QuoteId];  
