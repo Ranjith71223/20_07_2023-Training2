@@ -1,0 +1,78 @@
+<template>
+
+    <div class="slds-card" style="font-family: 'Open Sans', sans-serif">
+
+        <!-- Header -->
+        <header class="slds-card__header slds-media slds-media_center">
+            <div class="slds-media__figure">
+                <lightning-icon icon-name="standard:account" size="small"></lightning-icon>
+            </div>
+            <div class="slds-media__body slds-card__header-title slds-text-title_bold" style="font-size: 14px">
+                Quote Line Screen
+            </div>
+        </header>
+        
+        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+            <div class="slds-size_1-of-3">
+                <div class="slds-media__body slds-card__header-title slds-text-title_bold" style="font-size: 14px">
+                <lightning-input type="text" label="Quote Name" data-id="oppName" maxlength="15">
+                </lightning-input>
+                </div>
+            </div>
+            <div class="slds-size_1-of-2">
+            </div>
+            <div class="slds-size_1-of-2">
+            </div>
+          </div>
+
+        <!-- Table -->
+        <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" role="grid">
+            <thead>
+            <tr>
+                <th scope="col" height="22" style="width: 3rem">Nr.</th>
+                <th scope="col" height="22">Name</th>
+                <th scope="col" height="22">Website</th>
+                <th scope="col" height="22">Phone</th>
+                <th scope="col" height="22" style="width: 3rem"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <template for:each={listOfAccounts} for:item="rec">
+                <tr key={rec} class="slds-hint-parent">
+                    <td style="font-weight: bold">
+                        <lightning-formatted-number value={rec.index}></lightning-formatted-number>.
+                    </td>
+
+                    <td>
+                        <lightning-input type="text" variant="label-hidden" label="" data-id={rec.index} name="ID" value={rec.Id} onchange={handleInputChange}></lightning-input>
+                    </td>
+
+                    <td>
+                        <lightning-input type="text" variant="label-hidden" label="" data-id={rec.index} name="Name" value={rec.Name} onchange={handleInputChange}></lightning-input>
+                    </td>
+
+                    <td>
+                        <lightning-input type="text" variant="label-hidden" label="" data-id={rec.index} name="Website" value={rec.Website} onchange={handleInputChange}></lightning-input>
+                    </td>
+
+                    <td>
+                        <lightning-input type="text" variant="label-hidden" label="" data-id={rec.index} name="Phone" value={rec.Phone} onchange={handleInputChange}></lightning-input>
+                    </td>
+
+                    <td>
+                        <lightning-button-icon icon-name="utility:delete" alternative-text="Remove" value={rec.Id} title="Remove" name={rec.index} onclick={removeRow}></lightning-button-icon>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+        <div class="row">
+            <lightning-textarea name="Comments" label="Comments" value="initial value"></lightning-textarea>
+        </div>
+        <div class="slds-p-left_small slds-p-vertical_small">
+            <lightning-button icon-name="utility:save" variant="brand" label="Submit Quote for Approval" title="Submit Quote for Approval" onclick={createAccounts}></lightning-button>
+            <lightning-button variant="neutral" label="Add Quote Line" title="Add Quote Line" icon-name="utility:add" onclick={addNewRow}></lightning-button>
+        </div>
+    </div>
+
+</template>
