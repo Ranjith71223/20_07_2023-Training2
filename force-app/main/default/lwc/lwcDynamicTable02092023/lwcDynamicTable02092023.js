@@ -52,6 +52,10 @@ export default class LwcDynamicTable02092023 extends LightningElement {
             }
             
         }
+
+        SendEmailandSubmitforApproval{
+            
+        }
     
         createinitialRows(listOfAccounts, result , hasData) {
             let accountObject = {};
